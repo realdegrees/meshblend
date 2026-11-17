@@ -1,0 +1,41 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vs/
+.vscode/
+.idea/
+*.apk
+*.aab
+sysinfo.txt
+crashlytics-buildid.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# The demo samples imported for editing; their canonical copies are the package's Samples~
+/[Aa]ssets/[Ss]amples/
+/[Aa]ssets/[Ss]amples.meta
+
+# Raw captures the README images are composed from
+/docs/images/raw/

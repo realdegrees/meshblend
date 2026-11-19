@@ -1,6 +1,6 @@
 {
     "name": "com.realdegrees.meshblend",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "displayName": "Mesh Blend",
     "description": "Soft contacts for URP: softens the hard line where one surface meets another (a rock entering the terrain, a wall standing on the ground) with a screen-space post effect. No changes to materials, meshes or URP.",
     "unity": "6000.3",

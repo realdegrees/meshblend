@@ -590,17 +590,18 @@ Shader "Hidden/MeshBlend"
             float near0 = 1.0 / EyeDepth(rawP);
             float near1 = 1.0 / EyeDepth(RawDepthAt(beside));
             float2 way = float2(beside - p);
+            bool dropsAway = false;
             [unroll]
             for (int i = 1; i < 8; i++)
             {
                 float t = i / 8.0;
                 int2 s = ClampPixel(int2(round(float2(p) + way * t)));
-                if (IdOf(SurfaceAt(s)) != id) continue;
                 float depth = EyeDepth(RawDepthAt(s));
                 float expected = 1.0 / lerp(near0, near1, t);
-                if (depth - expected > max(radius, 4.0 * depth / _MeshBlendBand.z)) return true;
+                dropsAway = dropsAway || (IdOf(SurfaceAt(s)) == id
+                    && depth - expected > max(radius, 4.0 * depth / _MeshBlendBand.z));
             }
-            return false;
+            return dropsAway;
         }
 
         bool SeamAt(int2 p, uint own, uint4 seam, out SeamPoint near)
@@ -827,7 +828,11 @@ Shader "Hidden/MeshBlend"
             // step up and down in teeth. So the narrower the band on screen, the more the distance is counted from the
             // straight line instead, which has no steps: the seam lies half a pixel before the other surface's pixels.
             near.atContact = 1.0 - smoothstep(1.5, 3.0, acrossWorld / ownFootprint);
-            float acrossStraight = max(near.pixels - 0.5, 0.0) * ownFootprint;
+            // The line only smooths out those steps, half a pixel either way: it never puts a pixel nearer than the
+            // contact in the world, less a couple of pixels. Along the line's extension a pixel is at no distance from
+            // it however far it lies from the seam in the world, and where the seam's own pixels run on past the window
+            // the line is taken to hold, so a band on a surface seen from above ran off along the line as a shard.
+            float acrossStraight = max(max(near.pixels - 0.5, 0.0) * ownFootprint, acrossWorld - 2.0 * ownFootprint);
             float narrow = straight * saturate((24.0 - near.radius / ownFootprint) / 16.0);
             near.across = lerp(acrossWorld, acrossStraight, narrow);
             near.acrossWorld = acrossWorld;
